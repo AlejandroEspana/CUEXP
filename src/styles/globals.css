@@ -4,19 +4,59 @@
 
 @layer base {
   body {
-    @apply bg-dark-900 text-text-light font-sans antialiased overflow-x-hidden;
+    @apply bg-slate-50 text-slate-900 font-sans antialiased overflow-x-hidden selection:bg-sky-200 selection:text-sky-900;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-bold;
+    @apply font-display font-extrabold tracking-tight text-slate-900;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-dark-800/80 backdrop-blur-md border border-dark-700/50 shadow-xl rounded-xl;
+    @apply bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md shadow-slate-900/5 rounded-2xl;
   }
   .tech-grid {
     background-size: 40px 40px;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-image: linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
   }
+  .tech-grid-dark {
+    background-size: 32px 32px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .perspective-1200 {
+    perspective: 1200px;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
+
+/* Custom Webkit Scrollbars for Crisp Light Engineering aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+::selection {
+  background: rgba(2, 132, 199, 0.25);
+  color: #0c4a6e;
 }

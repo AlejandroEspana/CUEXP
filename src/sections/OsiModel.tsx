@@ -1,57 +1,73 @@
-﻿import { OsiStack } from '../components/osi/OsiStack';
+import { SectionHeader } from '../components/ui/SectionHeader';
+import { EngineeringConnection } from '../components/ui/EngineeringConnection';
+import { OsiStack } from '../components/osi/OsiStack';
+import { OsiLab } from '../components/osi/OsiLab';
 import { Card } from '../components/ui/Card';
 import { Network, ArrowDownUp } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 export const OsiModel = () => {
   return (
-    <div className="h-full flex flex-col gap-6">
-      <header className="flex items-center gap-4">
-        <div className="p-3 rounded-lg bg-purple/20 text-purple border border-purple/30">
-          <Network size={28} />
-        </div>
-        <div>
-          <h1 className="text-3xl text-white">Modelo OSI</h1>
-          <p className="text-slate-400">El estándar conceptual de 7 capas para redes de telecomunicaciones</p>
-        </div>
-      </header>
+    <div className="flex flex-col gap-8 pb-12">
+      <SectionHeader
+        badge="03 • ARQUITECTURA DE PROTOCOLOS"
+        badgeColor="purple"
+        icon={<Network size={28} className="text-purple-400" />}
+        title="El Modelo OSI y la Capa Física"
+        subtitle="El marco conceptual de 7 capas que estandariza la comunicación de datos y desacopla el software de la infraestructura física"
+      />
 
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 overflow-hidden h-full">
-          <OsiStack interactive />
+      {/* 7 Layers Interactive Stack with Inspector */}
+      <Card className="p-6 sm:p-8 bg-white border border-slate-200/90 shadow-md rounded-3xl">
+        <div className="border-b border-slate-200 pb-4 mb-6">
+          <span className="text-xs font-mono uppercase text-sky-700 font-extrabold tracking-wider bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
+            Explorador de Arquitectura OSI (ISO/IEC 7498-1)
+          </span>
+          <h3 className="text-2xl sm:text-3xl font-display font-black text-slate-900 mt-2">
+            Las 7 Capas del Modelo de Referencia
+          </h3>
+          <p className="text-sm sm:text-base text-slate-600 mt-1.5 font-normal">
+            Selecciona la Capa 1 para ver su relación directa con los medios de transmisión físicos estudiados en esta exposición.
+          </p>
         </div>
-        
-        <div className="flex flex-col gap-6">
-          <Card glowColor="purple" className="flex-1">
-            <h3 className="text-lg font-display text-white mb-4 flex items-center gap-2">
-              <ArrowDownUp className="text-purple" size={20} />
-              Encapsulación
-            </h3>
-            <p className="text-slate-300 text-sm mb-4 leading-relaxed">
-              Cuando un dispositivo envía datos, la información viaja <strong>hacia abajo</strong> por el modelo OSI. 
-              Cada capa añade su propia información de control (Header) a los datos que recibe de la capa superior.
-            </p>
-            <div className="bg-dark-900 rounded-lg p-4 border border-dark-700 font-mono text-xs space-y-2">
-              <div className="text-purple-400">Datos (L7)</div>
-              <div className="text-cyan-400">H4 + Datos (L4)</div>
-              <div className="text-blue-400">H3 + [H4 + Datos] (L3)</div>
-              <div className="text-emerald-400">H2 + [H3 + H4 + Datos] + T2 (L2)</div>
-              <div className="text-orange-400">01010101 (L1)</div>
-            </div>
-          </Card>
 
-          <Card glowColor="slate" className="bg-gradient-to-br from-dark-800 to-dark-900 border-l-4 border-l-purple relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-              <Network size={100} />
-            </div>
-            <h4 className="text-sm uppercase font-bold tracking-wider text-slate-400 mb-2">💻 Ingeniería de Software</h4>
-            <h3 className="text-lg text-white mb-2">¿Por qué importa?</h3>
-            <p className="text-slate-300 text-sm leading-relaxed relative z-10">
-              Como desarrollador, usualmente trabajas en la <strong>Capa 7</strong> (HTTP, APIs). Sin embargo, cuando hay problemas de rendimiento o conexión (Timeouts, CORS, DNS fails, latencia), necesitas entender cómo las capas subyacentes transportan (Capa 4 - TCP/UDP) y enrutan (Capa 3 - IP) tus peticiones para poder hacer <strong>troubleshooting</strong> y debugging efectivo.
-            </p>
-          </Card>
+        <OsiStack interactive showDetails />
+      </Card>
+
+      {/* Interactive Encapsulation / Decapsulation Virtual Lab */}
+      <div className="space-y-4 pt-6 border-t border-slate-200">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-purple-50 text-purple-700 border border-purple-200">
+            <ArrowDownUp size={22} />
+          </div>
+          <h3 className="text-2xl sm:text-3xl font-display font-black text-slate-900">
+            Laboratorio Interactivo de Encapsulación y Desencapsulación
+          </h3>
         </div>
+        <p className="text-sm sm:text-base text-slate-600 max-w-4xl font-sans leading-relaxed">
+          Observa cómo una petición web se envuelve en cabeceras de transporte (TCP), red (IP) y enlace (Ethernet) hasta convertirse en bits en la Capa 1, y cómo el receptor invierte el proceso.
+        </p>
+
+        <OsiLab />
       </div>
+
+      {/* Engineering Connection */}
+      <EngineeringConnection
+        topic="Troubleshooting Sistemático para Desarrolladores"
+        takeaway="Cuando una API falla, el modelo OSI te permite aislar si el problema es de código (L7), puertos bloqueados (L4), enrutamiento (L3) o cable roto (L1)."
+      >
+        <p>
+          Los mejores ingenieros de software utilizan el modelo OSI como una <strong>heurística de depuración mental</strong>. Cuando un servicio no responde:
+        </p>
+        <ul className="text-sm sm:text-base font-mono space-y-2.5 my-3 bg-slate-50 p-5 rounded-2xl border border-slate-200 text-slate-800">
+          <li><strong className="text-purple-700 font-black">• ¿Falla L7?</strong> El backend arrojó un HTTP 500 Internal Server Error (error en tu código / lógica de negocio).</li>
+          <li><strong className="text-sky-700 font-black">• ¿Falla L4?</strong> El servidor rechaza la conexión con `ECONNREFUSED` (el proceso no está escuchando en el puerto TCP).</li>
+          <li><strong className="text-blue-700 font-black">• ¿Falla L3?</strong> La petición arroja `No route to host` o timeout (problema de subredes, tablas de enrutamiento o VPN).</li>
+          <li><strong className="text-emerald-700 font-black">• ¿Falla L2/L1?</strong> El cable de red está desconectado, el transceptor SFP falló o la fibra óptica se rompió.</li>
+        </ul>
+        <p>
+          Entender estas capas te ahorra horas de intentar "arreglar código" cuando el problema real es una pérdida física de paquetes o una MTU mal configurada en el enlace de red.
+        </p>
+      </EngineeringConnection>
     </div>
   );
 };

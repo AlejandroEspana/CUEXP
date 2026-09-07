@@ -1,4 +1,4 @@
-﻿import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { cn } from '../layout/Layout';
 
 interface CardProps {
@@ -9,17 +9,17 @@ interface CardProps {
 
 export const Card = ({ children, className, glowColor }: CardProps) => {
   const glowClasses = {
-    primary: 'hover:shadow-[0_0_20px_rgba(37,99,235,0.2)] hover:border-primary/50',
-    cyan: 'hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:border-cyan/50',
-    purple: 'hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] hover:border-purple/50',
-    green: 'hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:border-green/50',
-    orange: 'hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:border-orange/50',
-    red: 'hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] hover:border-red/50',
+    primary: 'hover:shadow-lg hover:shadow-sky-500/15 hover:border-sky-500',
+    cyan: 'hover:shadow-lg hover:shadow-cyan-500/15 hover:border-cyan-500',
+    purple: 'hover:shadow-lg hover:shadow-purple-500/15 hover:border-purple-500',
+    green: 'hover:shadow-lg hover:shadow-emerald-500/15 hover:border-emerald-500',
+    orange: 'hover:shadow-lg hover:shadow-amber-500/15 hover:border-amber-500',
+    red: 'hover:shadow-lg hover:shadow-rose-500/15 hover:border-rose-500',
   };
 
   return (
     <div className={cn(
-      "glass-panel p-6 transition-all duration-300",
+      "glass-panel p-6 lg:p-8 transition-all duration-300",
       glowColor && glowClasses[glowColor],
       className
     )}>

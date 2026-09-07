@@ -1,13 +1,17 @@
 import { Link, useLocation } from 'react-router-dom';
 import { SECTIONS } from '../../data/sections';
-import { MonitorPlay } from 'lucide-react';
-import { usePresentation } from '../../hooks/usePresentation';
-import { cn } from './Layout';
+import { MonitorPlay, X, Network, Layers, ShieldCheck, Radio, Laptop } from 'lucide-react';
+import { useSectionNavigation } from '../../hooks/useSectionNavigation';
+import { cn } from '../../utils/cn';
 
-export const Sidebar = () => {
+interface SidebarProps {
+  onCloseMobile?: () => void;
+}
+
+export const Sidebar = ({ onCloseMobile }: SidebarProps) => {
   const location = useLocation();
-  const { togglePresentationMode, currentIndex } = usePresentation();
-  
+  const { togglePresentationMode, currentIndex } = useSectionNavigation();
+
   // Group sections
   const groupedSections: Record<string, typeof SECTIONS> = {};
   SECTIONS.forEach(section => {
@@ -16,67 +20,103 @@ export const Sidebar = () => {
     groupedSections[group].push(section);
   });
 
+  const groupIcons: Record<string, typeof Network> = {
+    GENERAL: Network,
+    CABLEADO: Layers,
+    FIBRA: ShieldCheck,
+    RF: Radio,
+    APLICACIÓN: Laptop
+  };
+
   return (
-    <div className="h-full flex flex-col p-4">
-      <div className="mb-6">
-        <h1 className="text-xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan">
-          MEDIOS DE TRANSMISIÓN
-        </h1>
+    <aside className="h-full flex flex-col p-5 bg-white/95 backdrop-blur-xl border-r border-slate-200 shadow-sm">
+      {/* Brand & Mobile Close */}
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-sky-600/20">
+            TX
+          </div>
+          <div>
+            <h1 className="text-base font-display font-black tracking-tight text-slate-900 leading-none">
+              MEDIOS DE TRANSMISIÓN
+            </h1>
+            <span className="text-xs font-mono text-sky-700 font-bold uppercase tracking-wider block mt-0.5">
+              Network Lab • SW Eng
+            </span>
+          </div>
+        </div>
+
+        {onCloseMobile && (
+          <button
+            onClick={onCloseMobile}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 md:hidden"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
-      
+
+      {/* Presentation Mode Action */}
       <button 
         onClick={togglePresentationMode}
-        className="mb-6 flex items-center justify-center gap-2 w-full py-2 px-4 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary transition-colors border border-primary/30"
+        className="mb-5 flex items-center justify-center gap-2.5 w-full py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white transition-all duration-200 font-bold text-sm shadow-sm hover:shadow-sky-600/25"
       >
         <MonitorPlay size={18} />
-        <span>Modo Presentación</span>
+        <span>Iniciar Modo Presentación</span>
       </button>
 
-      <div className="flex-1 overflow-y-auto pr-2 space-y-6 custom-scrollbar">
-        {Object.entries(groupedSections).map(([group, sections]) => (
-          <div key={group}>
-            {group !== 'GENERAL' && (
-              <div className="text-xs font-semibold text-slate-500 mb-2 tracking-wider flex items-center">
-                <span className="w-4 h-px bg-slate-700 mr-2"></span>
-                {group}
-                <span className="flex-1 h-px bg-slate-700 ml-2"></span>
+      {/* Nav List */}
+      <div className="flex-1 overflow-y-auto pr-1 space-y-6 custom-scrollbar">
+        {Object.entries(groupedSections).map(([group, sections]) => {
+          const GroupIcon = groupIcons[group] || Network;
+          return (
+            <div key={group}>
+              <div className="text-xs font-mono font-bold text-slate-500 uppercase mb-2.5 tracking-wider flex items-center gap-2 px-1">
+                <GroupIcon size={14} className="text-sky-600" />
+                <span>{group}</span>
+                <span className="flex-1 h-px bg-slate-200"></span>
               </div>
-            )}
-            <ul className="space-y-1">
-              {sections.map((section) => {
-                const isActive = location.pathname === section.path;
-                return (
-                  <li key={section.id}>
-                    <Link
-                      to={section.path}
-                      className={cn(
-                        "block px-3 py-2 rounded-md text-sm transition-colors",
-                        isActive 
-                          ? "bg-cyan/10 text-cyan font-medium border-l-2 border-cyan" 
-                          : "text-slate-400 hover:text-slate-200 hover:bg-dark-700/50 border-l-2 border-transparent"
-                      )}
-                    >
-                      {section.title}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+              <ul className="space-y-1">
+                {sections.map((section) => {
+                  const isActive = location.pathname === section.path;
+                  return (
+                    <li key={section.id}>
+                      <Link
+                        to={section.path}
+                        onClick={onCloseMobile}
+                        className={cn(
+                          "block px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 border-l-4",
+                          isActive 
+                            ? "bg-sky-100/90 text-sky-900 font-extrabold border-sky-600 shadow-sm" 
+                            : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-transparent"
+                        )}
+                      >
+                        {section.title}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
       </div>
-      
-      <div className="pt-4 mt-auto border-t border-dark-700">
-        <div className="text-xs text-slate-500 font-mono">
-          Progreso: {currentIndex + 1} / {SECTIONS.length}
+
+      {/* Progress Footer */}
+      <div className="pt-4 mt-auto border-t border-slate-200">
+        <div className="flex items-center justify-between text-sm font-mono font-medium">
+          <span className="text-slate-500">Progreso</span>
+          <span className="text-sky-700 font-extrabold">
+            {currentIndex + 1} / {SECTIONS.length}
+          </span>
         </div>
-        <div className="w-full bg-dark-700 h-1 mt-2 rounded-full overflow-hidden">
+        <div className="w-full bg-slate-100 h-2 mt-2 rounded-full overflow-hidden border border-slate-200">
           <div 
-            className="bg-cyan h-full transition-all duration-300"
+            className="bg-sky-600 h-full rounded-full transition-all duration-300"
             style={{ width: `${((currentIndex + 1) / SECTIONS.length) * 100}%` }}
           />
         </div>
       </div>
-    </div>
+    </aside>
   );
 };

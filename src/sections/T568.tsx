@@ -1,45 +1,40 @@
-﻿import { T568Lab } from '../components/connectors/T568Lab';
-import { Card } from '../components/ui/Card';
+import { SectionHeader } from '../components/ui/SectionHeader';
+import { EngineeringConnection } from '../components/ui/EngineeringConnection';
+import { T568Comparison } from '../components/connectors/T568Comparison';
+import { T568Lab } from '../components/connectors/T568Lab';
 import { Network } from 'lucide-react';
 
 export const T568 = () => {
   return (
-    <div className="h-full flex flex-col gap-6">
-      <header className="flex items-center gap-4">
-        <div className="p-3 rounded-lg bg-cyan/20 text-cyan border border-cyan/30">
-          <Network size={28} />
-        </div>
-        <div>
-          <h1 className="text-3xl text-white">T568A y T568B</h1>
-          <p className="text-slate-400">Estándares de cableado para pares trenzados</p>
-        </div>
-      </header>
-      
-      <div className="flex-1 overflow-y-auto pb-8 grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2">
-          <T568Lab />
-        </div>
-        
-        <div className="flex flex-col gap-6">
-          <Card glowColor="cyan">
-            <h3 className="text-lg text-white mb-2 font-display">¿Qué son estos estándares?</h3>
-            <p className="text-slate-300 text-sm leading-relaxed mb-4">
-              TIA/EIA-568-A y TIA/EIA-568-B son estándares que dictan la disposición de los pines para cables UTP/STP al crimpar conectores RJ45.
-            </p>
-            <p className="text-slate-300 text-sm leading-relaxed">
-              La única diferencia entre ambos es que los pares naranja y verde están intercambiados (Pines 1, 2, 3 y 6).
-            </p>
-          </Card>
-          
-          <Card glowColor="slate" className="border-l-4 border-l-cyan">
-            <h4 className="text-sm uppercase font-bold tracking-wider text-slate-400 mb-2">💻 Ingeniería de Software</h4>
-            <h3 className="text-lg text-white mb-2">El impacto en la transmisión</h3>
-            <p className="text-slate-300 text-sm leading-relaxed">
-              El orden no es aleatorio. Mantener los pares trenzados correctos minimiza el <strong>Crosstalk</strong> (diafonía) y la interferencia. Si armas un cable ignorando el estándar, aunque haya continuidad eléctrica de extremo a extremo, los paquetes sufrirán alta atenuación y ruido, resultando en retransmisiones TCP severas o pérdida de conexión.
-            </p>
-          </Card>
-        </div>
+    <div className="flex flex-col gap-8 pb-12">
+      <SectionHeader
+        badge="06 • ESTÁNDARES DE ASIGNACIÓN DE PINES"
+        badgeColor="cyan"
+        icon={<Network size={28} className="text-cyan" />}
+        title="Estándares TIA/EIA: T568A y T568B"
+        subtitle="Patrones estandarizados de colores y asignación de pares trenzados para la eliminación de diafonía en conectores RJ45"
+      />
+
+      {/* Side by Side Comparison and Swap Animation */}
+      <T568Comparison />
+
+      {/* Interactive Virtual Crimping Lab */}
+      <div className="pt-6 border-t-2 border-slate-200">
+        <T568Lab />
       </div>
+
+      {/* Engineering Connection */}
+      <EngineeringConnection
+        topic="Diafonía (Crosstalk) & Retransmisiones TCP Ocultas"
+        takeaway="El orden de los pines no es una convención estética: mantiene los pares trenzados emparejados electromagnéticamente para anular el ruido."
+      >
+        <p>
+          Un error común de programadores novatos al armar cables en laboratorios es inventar su propio orden de colores (por ejemplo: Azul, Blanco/Azul, Verde, Blanco/Verde...) asumiendo que "mientras el orden sea idéntico en ambos extremos, la electricidad pasará igual".
+        </p>
+        <p>
+          Si bien un tester básico de continuidad con luces LED indicará que los 8 hilos hacen contacto, ese cable sufrirá <strong>Split Pairs (Pares Divididos)</strong>: las señales de transmisión (TX) y recepción (RX) viajarán por hilos que no están trenzados entre sí. A altas frecuencias (Gigabit), el campo electromagnético inducirá un crosstalk descomunal que corromperá los paquetes en Capa 2, provocando que tu backend sufra pérdidas del 40% de paquetes y un throughput que caerá de 1 Gbps a menos de 10 Mbps.
+        </p>
+      </EngineeringConnection>
     </div>
   );
 };
