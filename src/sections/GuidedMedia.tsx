@@ -2,7 +2,8 @@ import { SectionHeader } from '../components/ui/SectionHeader';
 import { EngineeringConnection } from '../components/ui/EngineeringConnection';
 import { GuidedVsUnguidedDiagram } from '../components/network/GuidedVsUnguidedDiagram';
 import { MediaComparator } from '../components/network/MediaComparator';
-import { Cable, Scale } from 'lucide-react';
+import { UtpStpTransversal } from '../components/network/UtpStpTransversal';
+import { Cable, Scale, Layers } from 'lucide-react';
 
 export const GuidedMedia = () => {
   return (
@@ -17,6 +18,26 @@ export const GuidedMedia = () => {
 
       {/* Guided vs Unguided Comparison Panels */}
       <GuidedVsUnguidedDiagram />
+
+      {/* Interactive UTP/STP Cutaway & Differential Physics Model */}
+      <div className="space-y-6 pt-6 border-t-2 border-slate-200">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+          <div>
+            <span className="text-xs font-mono uppercase text-sky-700 font-black tracking-wider">
+              Anatomía Física de Medios Confinados
+            </span>
+            <h3 className="text-2xl lg:text-3xl font-display font-black text-slate-900 mt-1 flex items-center gap-2.5">
+              <Layers size={26} className="text-sky-600" />
+              Estructura Microscópica y Física del Cableado UTP / STP / FTP
+            </h3>
+          </div>
+          <span className="text-sm font-mono font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+            Exploración 3D Escalonada y Corte 2D Concéntrico
+          </span>
+        </div>
+
+        <UtpStpTransversal />
+      </div>
 
       {/* The Great Media Comparator */}
       <div className="space-y-6 pt-6 border-t-2 border-slate-200">
