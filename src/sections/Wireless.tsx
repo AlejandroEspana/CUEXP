@@ -260,7 +260,31 @@ export const Wireless = () => {
           </div>
         </div>
 
-        {/* REAL-TIME ELECTROMAGNETIC WAVE CANVAS */}
+        {/* Frequency & Scenario Real-Time Physics Ribbon */}
+        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-xs font-mono">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-purple-600 animate-ping"></span>
+            <span className="text-slate-600 font-bold">Frecuencia Activa:</span>
+            <strong className="text-purple-950 font-black">
+              {band === '2.4ghz' ? '2.4 GHz (λ = 12.5 cm - Onda Larga / Alta Penetración)' : band === '5ghz' ? '5.0 GHz (λ = 6.0 cm - Onda Media / Alta Velocidad)' : '6.0 GHz (λ = 5.0 cm - Onda Corta / Ultra Ancho de Banda)'}
+            </strong>
+          </div>
+          <div className="flex items-center gap-1.5 font-bold">
+            <span className="text-slate-500">Comportamiento:</span>
+            <span className={cn(
+              "px-2 py-0.5 rounded-md font-black text-[11px]",
+              scenario === 'los' ? "bg-emerald-100 text-emerald-950 border border-emerald-300" :
+              scenario === 'wall' ? "bg-amber-100 text-amber-950 border border-amber-300" :
+              "bg-rose-100 text-rose-950 border border-rose-300"
+            )}>
+              {scenario === 'los' ? 'Propagación Libre Sin Obstáculos' :
+               scenario === 'wall' ? (band === '2.4ghz' ? 'Muro: Atraviesa con pérdida moderada' : band === '5ghz' ? 'Muro: Atenuación severa y reflexión' : 'Muro: Bloqueo casi total de señal') :
+               'Contienda: Colisión Half-Duplex y Backoff'}
+            </span>
+          </div>
+        </div>
+
+        {/* DYNAMIC WAVEFIELD CANVAS */}
         <div className="relative h-64 sm:h-72 bg-slate-50 rounded-2xl border-2 border-slate-200 p-4 sm:p-6 overflow-hidden flex items-center justify-between shadow-xs">
           {/* TRANSMITTER: Access Point TX */}
           <div className="relative z-20 flex flex-col items-center bg-white p-3 sm:p-4 rounded-2xl border-2 border-purple-300 shadow-md w-36 sm:w-44 text-center">
@@ -284,19 +308,24 @@ export const Wireless = () => {
             </div>
           </div>
 
-          {/* DYNAMIC WAVEFIELD CANVAS */}
+          {/* DYNAMIC WAVEFIELD SVG CANVAS */}
           <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
             <svg className="w-full h-full" viewBox="0 0 700 240" preserveAspectRatio="none">
-              {/* Forward Propagating Spherical Waves */}
+              {/* Forward Propagating Spherical Waves from AP TX */}
               {[...Array(waveCount)].map((_, i) => {
-                const delay = (i * 2.0) / waveCount;
+                const animDuration = band === '2.4ghz' ? 2.6 : band === '5ghz' ? 1.8 : 1.3;
+                const delay = (i * animDuration) / waveCount;
+                
+                // Wall penetration opacities depending on frequency band
+                const wallEndOpacity = band === '2.4ghz' ? 0.55 : band === '5ghz' ? 0.20 : 0.02;
+
                 return (
                   <motion.path
                     key={`wave-${i}-${band}-${scenario}`}
                     d="M 160 30 A 180 180 0 0 1 160 210"
                     fill="none"
-                    stroke={scenario === 'contention' ? "#ef4444" : "#9333ea"}
-                    strokeWidth={band === '2.4ghz' ? 4 : band === '5ghz' ? 3 : 2.5}
+                    stroke={scenario === 'contention' ? "#e11d48" : band === '2.4ghz' ? "#7c3aed" : band === '5ghz' ? "#9333ea" : "#0284c7"}
+                    strokeWidth={band === '2.4ghz' ? 4.5 : band === '5ghz' ? 3.0 : 2.0}
                     strokeLinecap="round"
                     animate={{
                       d: [
@@ -309,11 +338,13 @@ export const Wireless = () => {
                           : "M 560 20 A 240 240 0 0 1 560 220"
                       ],
                       opacity: scenario === 'wall' 
-                        ? [0.95, 0.7, 0.2]
+                        ? [0.95, 0.75, wallEndOpacity]
+                        : scenario === 'contention'
+                        ? [0.95, 0.5, 0.0]
                         : [0.95, 0.65, 0.05]
                     }}
                     transition={{
-                      duration: 2.2,
+                      duration: animDuration,
                       repeat: Infinity,
                       delay: delay,
                       ease: "linear"
@@ -322,28 +353,57 @@ export const Wireless = () => {
                 );
               })}
 
+              {/* Competing Node Waves in Contention Scenario */}
+              {scenario === 'contention' && (
+                <>
+                  {[0, 1, 2].map((cw) => (
+                    <motion.path
+                      key={`contention-wave-${cw}`}
+                      d="M 520 200 A 160 160 0 0 1 360 40"
+                      fill="none"
+                      stroke="#dc2626"
+                      strokeWidth="3.5"
+                      strokeDasharray="6 3"
+                      animate={{
+                        d: [
+                          "M 480 180 A 40 40 0 0 1 420 120",
+                          "M 370 210 A 140 140 0 0 1 270 50"
+                        ],
+                        opacity: [0.9, 0.1]
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        delay: cw * 0.5,
+                        ease: "easeOut"
+                      }}
+                    />
+                  ))}
+                </>
+              )}
+
               {/* Reflected Waves in Wall Scenario */}
               {scenario === 'wall' && (
                 <>
                   {[0, 1].map((rw) => (
                     <motion.path
-                      key={`refl-${rw}`}
+                      key={`refl-${rw}-${band}`}
                       d="M 330 60 A 90 90 0 0 0 330 180"
                       fill="none"
                       stroke="#d97706"
-                      strokeWidth="3"
+                      strokeWidth={band === '6ghz' ? 4 : band === '5ghz' ? 3 : 2}
                       strokeDasharray="6 3"
                       animate={{
                         d: [
                           "M 340 80 A 50 50 0 0 0 340 160",
                           "M 220 50 A 120 120 0 0 0 220 190"
                         ],
-                        opacity: [0.85, 0]
+                        opacity: [band === '6ghz' ? 0.95 : band === '5ghz' ? 0.8 : 0.4, 0]
                       }}
                       transition={{
-                        duration: 1.8,
+                        duration: 1.6,
                         repeat: Infinity,
-                        delay: rw * 0.9,
+                        delay: rw * 0.8,
                         ease: 'easeOut'
                       }}
                     />
@@ -354,19 +414,19 @@ export const Wireless = () => {
               {/* Carrier Photon Particles */}
               <motion.circle
                 r="5"
-                fill={scenario === 'contention' ? "#ef4444" : "#9333ea"}
+                fill={scenario === 'contention' ? "#e11d48" : band === '2.4ghz' ? "#7c3aed" : band === '5ghz' ? "#9333ea" : "#0284c7"}
                 stroke="#ffffff"
                 strokeWidth="2"
                 animate={{
-                  cx: [140, scenario === 'wall' ? 340 : 540],
+                  cx: [140, scenario === 'wall' ? (band === '6ghz' ? 340 : 540) : scenario === 'contention' ? 350 : 540],
                   cy: [120, 120],
-                  opacity: [0, 1, 1, 0]
+                  opacity: scenario === 'contention' ? [0, 1, 0] : [0, 1, 1, 0]
                 }}
-                transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: band === '2.4ghz' ? 1.6 : band === '5ghz' ? 1.2 : 0.9, repeat: Infinity, ease: 'linear' }}
               />
             </svg>
 
-            {/* Concrete Wall Obstacle */}
+            {/* Concrete Wall Obstacle with Real Frequency Impact */}
             <AnimatePresence>
               {scenario === 'wall' && (
                 <motion.div
@@ -374,34 +434,68 @@ export const Wireless = () => {
                   initial={{ opacity: 0, scaleY: 0 }}
                   animate={{ opacity: 1, scaleY: 1 }}
                   exit={{ opacity: 0, scaleY: 0 }}
-                  className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-12 sm:w-16 bg-slate-200 border-2 border-slate-400 rounded-xl shadow-lg flex flex-col items-center justify-around py-3 z-10"
+                  className="absolute left-1/2 -translate-x-1/2 top-3 bottom-3 w-14 sm:w-20 bg-slate-200 border-2 border-slate-400 rounded-xl shadow-lg flex flex-col items-center justify-around py-3 z-10"
                 >
                   <div className="w-full border-b border-slate-300"></div>
-                  <span className="text-[10px] font-mono font-black text-slate-700 -rotate-90 uppercase tracking-wider whitespace-nowrap">
-                    MURO HORMIGÓN (-18 dB)
+                  <span className="text-[10px] font-mono font-black text-slate-800 -rotate-90 uppercase tracking-wider whitespace-nowrap">
+                    MURO HORMIGÓN ({band === '2.4ghz' ? '-12 dB' : band === '5ghz' ? '-20 dB' : '-35 dB'})
                   </span>
                   <div className="w-full border-t border-slate-300"></div>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Contention Collision Alert */}
+            {/* 6 GHz Blocked Warning Behind Wall */}
+            <AnimatePresence>
+              {scenario === 'wall' && band === '6ghz' && (
+                <motion.div
+                  key="blocked-6ghz"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="absolute right-40 sm:right-52 bg-rose-100 border-2 border-rose-600 text-rose-950 px-2.5 py-1 rounded-xl text-[10px] font-mono font-black shadow-md z-10 animate-pulse"
+                >
+                  ⚠️ SEÑAL 6 GHz ABSORBIDA (CERO COBERTURA)
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Contention Active Collision Hub */}
             <AnimatePresence>
               {scenario === 'contention' && (
                 <motion.div
                   key="contention-alert"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="absolute top-2 left-1/2 -translate-x-1/2 bg-rose-50 border-2 border-rose-600 text-rose-950 px-4 py-2 rounded-2xl shadow-xl z-20 text-center font-mono max-w-xs"
+                >
+                  <div className="flex items-center justify-center gap-1.5 text-xs font-black text-rose-900">
+                    <ShieldAlert size={16} className="text-rose-600 animate-bounce" />
+                    <span>💥 COLISIÓN RF EN EL MEDIO</span>
+                  </div>
+                  <div className="text-[10px] text-rose-800 font-bold mt-0.5">
+                    Transmisión simultánea no coordinada
+                  </div>
+                  <div className="mt-1 px-2 py-0.5 bg-white rounded-lg border border-rose-300 text-[10px] text-rose-950 font-black">
+                    Random Backoff: <span className="text-rose-600 animate-pulse">34 µs (Pausa TX)</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Competing Node Badge in Contention Scenario */}
+            <AnimatePresence>
+              {scenario === 'contention' && (
+                <motion.div
+                  key="competing-node"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 30 }}
-                  className="absolute top-3 left-1/2 -translate-x-1/2 bg-rose-50 border-2 border-rose-400 text-rose-900 px-3.5 py-1.5 rounded-xl shadow-md z-10 text-center font-mono"
+                  className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-amber-50 border-2 border-amber-500 text-amber-950 px-3 py-1 rounded-xl text-[10px] font-mono font-black shadow-md z-20 flex items-center gap-1.5"
                 >
-                  <div className="flex items-center gap-1.5 text-xs font-black text-rose-700">
-                    <ShieldAlert size={14} className="text-rose-600 animate-bounce" />
-                    <span>COLISIÓN DETECTADA (CANAL OCUPADO)</span>
-                  </div>
-                  <div className="text-[10px] text-slate-600">
-                    Ejecutando Random Exponential Backoff: <strong>Timer = 34 µs</strong>
-                  </div>
+                  <span className="w-2 h-2 rounded-full bg-amber-600 animate-ping"></span>
+                  <span>Dispositivo Competidor (Transmitiendo sin CCA)</span>
                 </motion.div>
               )}
             </AnimatePresence>

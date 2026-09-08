@@ -108,10 +108,10 @@ export const OsiLab = () => {
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-400 text-xs font-mono text-amber-950 font-bold text-center shadow-sm"
+                className="p-3.5 rounded-xl bg-amber-100 border-2 border-amber-600 text-xs font-mono text-amber-950 font-bold text-center shadow-sm"
               >
-                <div className="font-black text-amber-800">PREÁMBULO + SFD</div>
-                <div className="text-[10px] text-amber-700 font-semibold mt-0.5">8 bytes sincronización</div>
+                <div className="font-black text-amber-950 text-xs">PREÁMBULO + SFD (L1)</div>
+                <div className="text-[10px] text-amber-900 font-bold mt-0.5">8 bytes sincronización</div>
               </motion.div>
             )}
 
@@ -120,10 +120,10 @@ export const OsiLab = () => {
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="p-3.5 rounded-xl bg-emerald-50 border-2 border-emerald-400 text-xs font-mono text-emerald-950 font-bold text-center shadow-sm"
+                className="p-3.5 rounded-xl bg-emerald-100 border-2 border-emerald-600 text-xs font-mono text-emerald-950 font-bold text-center shadow-sm"
               >
-                <div className="font-black text-emerald-800">CABECERA MAC (L2)</div>
-                <div className="text-[10px] text-emerald-700 font-semibold mt-0.5">14 bytes (MAC Orig/Dest)</div>
+                <div className="font-black text-emerald-950 text-xs">CABECERA MAC (L2)</div>
+                <div className="text-[10px] text-emerald-900 font-bold mt-0.5">14 bytes (MAC Orig/Dest)</div>
               </motion.div>
             )}
 
@@ -132,10 +132,10 @@ export const OsiLab = () => {
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="p-3.5 rounded-xl bg-sky-50 border-2 border-sky-400 text-xs font-mono text-sky-950 font-bold text-center shadow-sm"
+                className="p-3.5 rounded-xl bg-sky-100 border-2 border-sky-600 text-xs font-mono text-sky-950 font-bold text-center shadow-sm"
               >
-                <div className="font-black text-sky-800">CABECERA IP (L3)</div>
-                <div className="text-[10px] text-sky-700 font-semibold mt-0.5">20 bytes (IP Orig/Dest)</div>
+                <div className="font-black text-sky-950 text-xs">CABECERA IP (L3)</div>
+                <div className="text-[10px] text-sky-900 font-bold mt-0.5">20 bytes (IP Orig/Dest)</div>
               </motion.div>
             )}
 
@@ -144,17 +144,17 @@ export const OsiLab = () => {
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="p-3.5 rounded-xl bg-cyan-50 border-2 border-cyan-400 text-xs font-mono text-cyan-950 font-bold text-center shadow-sm"
+                className="p-3.5 rounded-xl bg-blue-100 border-2 border-blue-600 text-xs font-mono text-blue-950 font-bold text-center shadow-sm"
               >
-                <div className="font-black text-cyan-800">CABECERA TCP (L4)</div>
-                <div className="text-[10px] text-cyan-700 font-semibold mt-0.5">20 bytes (Puertos 54120 → 443)</div>
+                <div className="font-black text-blue-950 text-xs">CABECERA TCP (L4)</div>
+                <div className="text-[10px] text-blue-900 font-bold mt-0.5">20 bytes (Puertos 54120 → 443)</div>
               </motion.div>
             )}
 
-            {/* L7 HTTP Data Payload (Always in the center) */}
-            <div className="p-4 rounded-2xl bg-purple-600 border-2 border-purple-500 text-sm font-mono text-white font-black text-center shadow-md ring-4 ring-purple-300/40">
-              <div className="text-white font-black">DATOS DE APLICACIÓN (L7)</div>
-              <div className="text-xs text-purple-100 font-semibold mt-1">HTTP GET /api/v1/users (JSON)</div>
+            {/* L7 HTTP Data Payload (Always in the center) - Fixed High Contrast Cisco Light */}
+            <div className="p-4 rounded-2xl bg-purple-100 border-2 border-purple-600 text-sm font-mono text-purple-950 font-black text-center shadow-md ring-2 ring-purple-400/40">
+              <div className="text-purple-950 font-black text-sm uppercase tracking-wide">DATOS DE APLICACIÓN (L7)</div>
+              <div className="text-xs text-purple-900 font-bold mt-1">HTTP GET /api/v1/users (JSON)</div>
             </div>
 
             {/* L2 CRC Trailer (visible on step >= 3) */}
@@ -162,10 +162,10 @@ export const OsiLab = () => {
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="p-3.5 rounded-xl bg-emerald-50 border-2 border-emerald-400 text-xs font-mono text-emerald-950 font-bold text-center shadow-sm"
+                className="p-3.5 rounded-xl bg-emerald-100 border-2 border-emerald-600 text-xs font-mono text-emerald-950 font-bold text-center shadow-sm"
               >
-                <div className="font-black text-emerald-800">COLA FCS (L2)</div>
-                <div className="text-[10px] text-emerald-700 font-semibold mt-0.5">4 bytes CRC-32</div>
+                <div className="font-black text-emerald-950 text-xs">COLA FCS (L2)</div>
+                <div className="text-[10px] text-emerald-900 font-bold mt-0.5">4 bytes CRC-32</div>
               </motion.div>
             )}
           </div>
@@ -184,7 +184,7 @@ export const OsiLab = () => {
               {activeStep.headerFields.map((f, i) => (
                 <li key={i} className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-sky-600"></span>
-                  <span>{f}</span>
+                  <span className="font-semibold text-slate-800">{f}</span>
                 </li>
               ))}
             </ul>
@@ -195,14 +195,14 @@ export const OsiLab = () => {
               <h5 className="text-xs sm:text-sm font-mono uppercase text-purple-800 font-black mb-3">
                 Explicación Didáctica del Paso:
               </h5>
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal mb-4">
+              <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-medium mb-4">
                 {activeStep.payloadDescription}
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white border border-slate-300 font-mono text-xs sm:text-sm text-amber-800 font-bold shadow-xs">
-              <span className="text-slate-500 font-normal">Serialización binaria: </span>
-              {activeStep.binaryRepresentation}
+            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs sm:text-sm shadow-inner">
+              <span className="text-slate-400 font-normal">Serialización binaria: </span>
+              <span className="text-emerald-400 font-black tracking-wider">{activeStep.binaryRepresentation}</span>
             </div>
           </div>
         </div>
